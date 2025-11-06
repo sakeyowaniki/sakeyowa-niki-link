@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>酒好きによるおすすめリンク</title>
+    <style>
+      :root {
+        --bg: #1e1e1e;
+        --card: #272727;
+        --accent: #e6b450;
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.65);
+        --shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+        --radius: 14px;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: linear-gradient(180deg, var(--bg), #181818 60%);
+        color: var(--text);
+        font-family: Inter, "Hiragino Kaku Gothic Pro", "Yu Gothic",
+          "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 20px;
+        box-sizing: border-box;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 520px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.01)
+        );
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 18px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.2px;
+        color: var(--text);
+      }
+      p.lead {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .accordion {
+        margin-top: 18px;
+      }
+
+      .accordion-item {
+        background: transparent;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      .accordion-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        padding: 14px 16px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.01),
+          rgba(255, 255, 255, 0.005)
+        );
+        cursor: pointer;
+        color: var(--text);
+        font-weight: 600;
+        font-size: 15px;
+        border: none;
+        outline: none;
+        transition: background 0.18s ease, transform 0.12s ease;
+      }
+      .accordion-header:active {
+        transform: scale(0.998);
+      }
+
+      .accordion-header .title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .badge {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 6px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .accordion-header::after {
+        content: "";
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-right: 2px solid var(--muted);
+        border-bottom: 2px solid var(--muted);
+        transform: rotate(-45deg);
+        transition: transform 0.22s ease, border-color 0.18s ease;
+        margin-left: 8px;
+      }
+      .accordion-item.open .accordion-header::after {
+        transform: rotate(45deg);
+        border-color: var(--accent);
+      }
+
+      .panel {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+          padding 0.24s ease;
+        padding: 0 16px;
+        box-sizing: border-box;
+      }
+
+      .panel-inner {
+        padding: 14px 0 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .link-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        padding: 12px 14px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.01)
+        );
+        color: var(--text);
+        text-decoration: none;
+        border-radius: 12px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.55);
+        transition: transform 0.16s ease, box-shadow 0.16s ease,
+          background 0.12s ease;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .link-btn .meta {
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+        margin-left: auto;
+      }
+      .link-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+      }
+      .link-row {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .note {
+        margin-top: 14px;
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      /* Responsive */
+      @media (max-width: 420px) {
+        .card {
+          padding: 20px;
+          border-radius: 16px;
+        }
+        h1 {
+          font-size: 18px;
+        }
+        .accordion-header {
+          padding: 12px 12px;
+          font-size: 14px;
+        }
+        .link-btn {
+          padding: 11px 12px;
+          font-size: 13px;
+          border-radius: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <main class="card" role="main" aria-labelledby="page-title">
+        <header>
+          <h1 id="page-title">酒好きによるおすすめリンク</h1>
+          <p class="lead">
+            各カテゴリをタップしておすすめ商品へ。楽天アフィリエイトリンク（ダミー）を使用しています。
+          </p>
+        </header>
+
+        <section class="accordion" id="sake-accordion">
+          <!-- ビール -->
+          <div class="accordion-item" data-key="beer">
+            <button class="accordion-header" aria-expanded="false">
+              <span class="title">ビール</span>
+              <span class="badge">3件</span>
+            </button>
+            <div class="panel" aria-hidden="true">
+              <div class="panel-inner">
+                <div class="link-row">
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=beer1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    一番搾りギフトセット
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=beer2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    プレミアムラガー 6本パック
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=beer3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    飲み比べセット（定番）
+                    <span class="meta">楽天市場</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 発泡酒 -->
+          <div class="accordion-item" data-key="happoshu">
+            <button class="accordion-header" aria-expanded="false">
+              <span class="title">発泡酒（低温アルコール）</span>
+              <span class="badge">4件</span>
+            </button>
+            <div class="panel" aria-hidden="true">
+              <div class="panel-inner">
+                <div class="link-row">
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=happo1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    発泡酒お得パック
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=happo2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ローコスト缶セット
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=happo3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    詰め合わせバラエティ
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=happo4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    こだわりの発泡酒
+                    <span class="meta">楽天市場</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- クラフトビール -->
+          <div class="accordion-item" data-key="craft">
+            <button class="accordion-header" aria-expanded="false">
+              <span class="title">クラフトビール</span>
+              <span class="badge">5件</span>
+            </button>
+            <div class="panel" aria-hidden="true">
+              <div class="panel-inner">
+                <div class="link-row">
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=craft1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    地ビールセット（全国）
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=craft2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    限定醸造3種飲み比べ
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=craft3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    小瓶コレクション
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=craft4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ギフト向けクラフト詰め合わせ
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=craft5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    シーズナルIPAパック
+                    <span class="meta">楽天市場</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ノンアルコール -->
+          <div class="accordion-item" data-key="nonalc">
+            <button class="accordion-header" aria-expanded="false">
+              <span class="title">ノンアルコール</span>
+              <span class="badge">3件</span>
+            </button>
+            <div class="panel" aria-hidden="true">
+              <div class="panel-inner">
+                <div class="link-row">
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=non1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ノンアルコールビール6本セット
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=non2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    カロリー控えめノンアル
+                    <span class="meta">楽天市場</span>
+                  </a>
+                  <a
+                    class="link-btn"
+                    href="https://example.com/?aff=rakuten&amp;cat=non3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ノンアル飲み比べ
+                    <span class="meta">楽天市場</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <p class="note">
+          ※リンクはダミーの楽天アフィリエイトURLです。実運用時はアフィリエイトIDを設定してください。
+        </p>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        const accordion = document.getElementById("sake-accordion");
+        if (!accordion) return;
+
+        // 初期化：すべて閉じる
+        const items = Array.from(accordion.querySelectorAll(".accordion-item"));
+        items.forEach((item) => {
+          const header = item.querySelector(".accordion-header");
+          const panel = item.querySelector(".panel");
+          header.addEventListener("click", () => toggleItem(item));
+          header.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleItem(item);
+            }
+          });
+        });
+
+        function toggleItem(target) {
+          const isOpen = target.classList.contains("open");
+
+          // 一度すべて閉じる（アコーディオンとして1つだけ開く）
+          items.forEach((it) => {
+            it.classList.remove("open");
+            const h = it.querySelector(".accordion-header");
+            const p = it.querySelector(".panel");
+            h.setAttribute("aria-expanded", "false");
+            p.setAttribute("aria-hidden", "true");
+            p.style.maxHeight = null;
+          });
+
+          if (!isOpen) {
+            // 開く
+            target.classList.add("open");
+            const header = target.querySelector(".accordion-header");
+            const panel = target.querySelector(".panel");
+            header.setAttribute("aria-expanded", "true");
+            panel.setAttribute("aria-hidden", "false");
+
+            // 計算してアニメーションで開く
+            const inner = panel.querySelector(".panel-inner");
+            const desired = inner.scrollHeight;
+            panel.style.maxHeight = desired + "px";
+          }
+        }
+
+        // Optional: 最初の項目を開く（コメントアウト可能）
+        // toggleItem(items[0]);
+      })();
+    </script>
+  </body>
+</html>
